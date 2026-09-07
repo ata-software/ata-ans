@@ -1,0 +1,1647 @@
+/* ===================================================================
+   ATA - Apple iOS Human Interface Design System
+   =================================================================== */
+
+:root {
+    /* Color Palette - Light Mode (Default) */
+    --system-blue: #007aff;
+    --system-blue-dark: #0062d2;
+    --system-green: #34c759;
+    --system-red: #ff3b30;
+    --system-gray: #8e8e93;
+    --system-gray2: #aeaeb2;
+    --system-gray3: #c7c7cc;
+    --system-gray4: #d1d1d6;
+    --system-gray5: #e5e5ea;
+    --system-gray6: #f2f2f7;
+
+    --bg-page: #e8ecf2;
+    --bg-viewport: #ffffff;
+    --bg-navbar: rgba(246, 246, 248, 0.82);
+    --bg-composer: rgba(246, 246, 248, 0.86);
+    --bg-input: #ffffff;
+    --bg-input-border: #e0e0e5;
+    --bg-sheet: #f2f2f7;
+    --bg-cell: #ffffff;
+    --bg-alert: rgba(240, 240, 245, 0.92);
+
+    --bubble-user-bg: linear-gradient(180deg, #0b84ff 0%, #007aff 100%);
+    --bubble-user-text: #ffffff;
+    --bubble-ata-bg: #e9e9eb;
+    --bubble-ata-text: #000000;
+
+    --text-primary: #000000;
+    --text-secondary: #8e8e93;
+    --text-tertiary: #c7c7cc;
+
+    --separator: rgba(60, 60, 67, 0.18);
+    --nav-border: rgba(60, 60, 67, 0.12);
+    --dock-bg: rgba(255, 255, 255, 0.7);
+
+    --phone-chassis: #1e2024;
+    --phone-bezel: #0d0e11;
+    --phone-edge-highlight: rgba(255, 255, 255, 0.15);
+    --phone-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.2);
+
+    --indicator-color: #000000;
+    --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+    --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --bg-page-gradient: linear-gradient(135deg, #f0f3f8 0%, #e2e8f0 100%);
+    --spring-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --sheet-easing: cubic-bezier(0.32, 0.72, 0, 1);
+
+    /* Mobile keyboard & viewport handling */
+    --app-height: 100dvh;
+    --viewport-offset-top: 0px;
+    --keyboard-height: 0px;
+}
+
+/* ===================================================================
+   DARK MODE
+   =================================================================== */
+[data-theme="dark"] {
+    /* Çerçevenin dışında kalan daha açık gradyan geçişli zemin */
+    --bg-page: #232733;
+    --bg-page-gradient: linear-gradient(135deg, #363c4e 0%, #242836 50%, #151822 100%);
+    --bg-viewport: #000000;
+    --bg-navbar: rgba(22, 22, 24, 0.82);
+    --bg-composer: rgba(22, 22, 24, 0.88);
+    --bg-input: #1c1c1e;
+    --bg-input-border: #38383a;
+    --bg-sheet: #1c1c1e;
+    --bg-cell: #2c2c2e;
+    --bg-alert: rgba(36, 36, 38, 0.9);
+
+    --bubble-user-bg: linear-gradient(180deg, #0a84ff 0%, #0071e3 100%);
+    --bubble-user-text: #ffffff;
+    --bubble-ata-bg: #26252a;
+    --bubble-ata-text: #ffffff;
+
+    --text-primary: #ffffff;
+    --text-secondary: #98989d;
+    --text-tertiary: #48484a;
+
+    --separator: rgba(84, 84, 88, 0.45);
+    --nav-border: rgba(84, 84, 88, 0.35);
+    --dock-bg: rgba(36, 40, 54, 0.8);
+
+    /* Kozmik Turuncu (Cosmic Orange) Çerçeve & Işıma */
+    --phone-chassis: #ff6a00;
+    --phone-bezel: #ff6a00;
+    --phone-edge-highlight: #ff9d47;
+    --phone-shadow: 0 40px 100px -15px rgba(0, 0, 0, 0.75), 0 0 45px rgba(255, 106, 0, 0.42);
+
+    --indicator-color: #ffffff;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Reset and Global Setup */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-page-gradient);
+    font-family: var(--font-stack);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background 0.45s ease;
+}
+
+/* Ambient glow on desktop */
+.ios-ambient-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 20%, rgba(0, 122, 255, 0.07) 0%, transparent 60%);
+    z-index: 0;
+    transition: background 0.45s ease;
+}
+
+[data-theme="dark"] .ios-ambient-layer {
+    background: radial-gradient(circle at 50% 45%, rgba(255, 106, 0, 0.22) 0%, rgba(255, 138, 48, 0.08) 45%, transparent 75%);
+}
+
+/* ===================================================================
+   DEVICE WRAPPER & DESKTOP IPHONE FRAME
+   =================================================================== */
+.device-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    padding: 16px;
+}
+
+.iphone-frame {
+    position: relative;
+    width: 410px;
+    height: 844px;
+    max-width: 100%;
+    max-height: 94vh;
+    background-color: var(--bg-viewport);
+    border-radius: 54px;
+    box-shadow: var(--phone-shadow);
+    border: 10px solid var(--phone-bezel);
+    outline: 2px solid var(--phone-edge-highlight);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.45s var(--spring-easing), border-color 0.35s ease, outline-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+[data-theme="dark"] .iphone-frame {
+    border-color: #ff6a00 !important;
+    outline-color: #ff9d47 !important;
+    box-shadow: 0 40px 100px -15px rgba(0, 0, 0, 0.75), 0 0 50px rgba(255, 106, 0, 0.45) !important;
+}
+
+/* Dynamic Island */
+.iphone-notch {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 124px;
+    height: 32px;
+    background-color: #000000;
+    border-radius: 20px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease;
+}
+
+.notch-sensor {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #0e122b 30%, #05060d 90%);
+}
+
+.notch-camera {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1a2538 20%, #000000 80%);
+    box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+/* iOS Status Bar */
+.ios-status-bar {
+    position: relative;
+    width: 100%;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    z-index: 40;
+    background-color: transparent;
+    pointer-events: none;
+    letter-spacing: -0.2px;
+}
+
+.status-time {
+    font-variant-numeric: tabular-nums;
+}
+
+.status-icons {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: 14px;
+}
+
+.status-icon {
+    width: 16px;
+    height: 11.5px;
+    display: block;
+    flex-shrink: 0;
+}
+
+.cellular-icon {
+    width: 16.5px;
+    height: 11.5px;
+}
+
+.wifi-icon {
+    width: 15px;
+    height: 11px;
+    transform: translateY(0.5px);
+}
+
+
+
+.battery-indicator {
+    width: 22px;
+    height: 11.5px;
+    border: 1px solid currentColor;
+    border-radius: 3.5px;
+    padding: 1.5px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.battery-indicator::after {
+    content: '';
+    position: absolute;
+    right: -3.5px;
+    top: 3px;
+    width: 2px;
+    height: 4px;
+    background-color: currentColor;
+    border-radius: 0 1px 1px 0;
+}
+
+.battery-level {
+    width: 82%;
+    height: 100%;
+    background-color: currentColor;
+    border-radius: 1.5px;
+}
+
+/* Viewport inside Phone */
+.ios-app-viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--bg-viewport);
+    flex: 1;
+}
+
+/* ===================================================================
+   iOS NAVIGATION BAR (APPLE MESSAGES STYLE)
+   =================================================================== */
+.ios-nav-bar {
+    position: relative;
+    width: 100%;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px 8px 14px;
+    background-color: var(--bg-navbar);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-bottom: 0.5px solid var(--nav-border);
+    z-index: 30;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.nav-left, .nav-right {
+    width: 44px;
+    display: flex;
+    align-items: center;
+}
+
+.nav-right {
+    justify-content: flex-end;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: var(--system-blue);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.nav-btn:active {
+    transform: scale(0.92);
+    background-color: rgba(0, 122, 255, 0.1);
+}
+
+.nav-btn svg {
+    width: 21px;
+    height: 21px;
+}
+
+.nav-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.nav-avatar-wrap {
+    margin-bottom: 2px;
+}
+
+.nav-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+    border: 1.5px solid rgba(0, 122, 255, 0.6);
+    background-color: #0b0f19;
+    flex-shrink: 0;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+}
+
+.nav-title-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.15;
+}
+
+.nav-title {
+    font-size: 15.5px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.nav-subtitle {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 1px;
+}
+
+.online-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--system-green);
+    display: inline-block;
+    box-shadow: 0 0 6px rgba(52, 199, 89, 0.6);
+}
+
+/* ===================================================================
+   CHAT VIEWPORT & MESSAGES STREAM
+   =================================================================== */
+.chat-viewport {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    padding: 16px 14px 20px 14px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.chat-viewport::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-viewport::-webkit-scrollbar-thumb {
+    background-color: rgba(142, 142, 147, 0.25);
+    border-radius: 4px;
+}
+
+.chat-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+/* Date Pill */
+.message-date-separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+
+.message-date-separator span {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background-color: rgba(142, 142, 147, 0.12);
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: -0.2px;
+}
+
+/* Welcome Card */
+.welcome-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 20px auto 30px auto;
+    max-width: 290px;
+    animation: fadeInScale 0.5s var(--spring-easing);
+}
+
+.welcome-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
+    border: 2px solid var(--system-blue);
+    background-color: #0b0f19;
+}
+
+.welcome-title {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+}
+
+.welcome-text {
+    font-size: 13.5px;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}
+
+/* Messages Stream */
+.messages-stream {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Single Message Container */
+.message-row {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    animation: messageSlideIn 0.32s var(--spring-easing) forwards;
+}
+
+.message-row.user-row {
+    align-items: flex-end;
+}
+
+.message-row.ata-row {
+    align-items: flex-start;
+}
+
+/* Chat Bubbles */
+.chat-bubble {
+    position: relative;
+    max-width: 80%;
+    padding: 10px 15px;
+    font-size: 15.5px;
+    line-height: 1.35;
+    letter-spacing: -0.25px;
+    word-break: break-word;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+/* User Bubble (iMessage Blue) */
+.user-bubble {
+    background: var(--bubble-user-bg);
+    color: var(--bubble-user-text);
+    border-radius: 20px 20px 4px 20px;
+    box-shadow: 0 2px 6px rgba(0, 122, 255, 0.22);
+}
+
+/* ATA Bubble (iMessage Neutral Gray) */
+.ata-bubble {
+    background-color: var(--bubble-ata-bg);
+    color: var(--bubble-ata-text);
+    border-radius: 20px 20px 20px 4px;
+}
+
+/* Message Status / Time */
+.message-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    margin-top: 3px;
+    padding: 0 4px;
+}
+
+.user-row .message-meta {
+    justify-content: flex-end;
+}
+
+.ata-row .message-meta {
+    justify-content: flex-start;
+}
+
+/* Typing Indicator Bubble */
+.typing-bubble-wrap {
+    margin-top: 8px;
+    margin-bottom: 4px;
+    animation: fadeIn 0.25s ease;
+}
+
+.typing-bubble {
+    padding: 12px 18px;
+    width: fit-content;
+    border-radius: 18px 18px 18px 4px;
+    background-color: var(--bubble-ata-bg);
+}
+
+.typing-dots {
+    display: flex;
+    align-items: center;
+    gap: 4.5px;
+}
+
+.typing-dots .dot {
+    width: 7.5px;
+    height: 7.5px;
+    border-radius: 50%;
+    background-color: var(--text-secondary);
+    opacity: 0.45;
+    animation: dotPulse 1.3s infinite ease-in-out;
+}
+
+.typing-dots .dot:nth-child(1) { animation-delay: 0s; }
+.typing-dots .dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots .dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ===================================================================
+   iOS COMPOSER / BOTTOM BAR (DUAL INPUT: SORU & RICA)
+   =================================================================== */
+.ios-composer {
+    position: relative;
+    width: 100%;
+    background-color: var(--bg-composer);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-top: 0.5px solid var(--nav-border);
+    padding: 8px 12px 10px 12px;
+    z-index: 30;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.composer-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: var(--bg-input);
+    border: 1px solid var(--bg-input-border);
+    border-radius: 18px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.composer-card:focus-within {
+    border-color: var(--system-blue);
+    box-shadow: 0 2px 10px rgba(0, 122, 255, 0.12);
+}
+
+.composer-row {
+    display: flex;
+    align-items: center;
+    padding: 4px 10px 4px 14px;
+    min-height: 40px;
+    gap: 8px;
+}
+
+.composer-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--system-blue);
+    min-width: 36px;
+    letter-spacing: -0.2px;
+    user-select: none;
+}
+
+.composer-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-stack);
+    font-size: 16px; /* 16px prevents iOS Safari from zooming in and shifting screen upwards */
+    color: var(--text-primary);
+    padding: 4px 0;
+    letter-spacing: -0.2px;
+}
+
+.composer-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.75;
+    font-size: 14.5px;
+}
+
+.composer-divider {
+    height: 0.5px;
+    background-color: var(--separator);
+    margin-left: 58px;
+}
+
+/* Send Button */
+.send-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: var(--system-gray4);
+    border: none;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: not-allowed;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease, transform 0.15s var(--spring-easing), opacity 0.2s ease;
+    margin-bottom: 2px;
+    opacity: 0.7;
+}
+
+.send-btn svg {
+    width: 19px;
+    height: 19px;
+    transform: translateY(-0.5px);
+}
+
+.send-btn:not(:disabled) {
+    background-color: var(--system-blue);
+    cursor: pointer;
+    opacity: 1;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.35);
+}
+
+.send-btn:not(:disabled):active {
+    transform: scale(0.9);
+}
+
+/* Home indicator line */
+.home-indicator {
+    width: 134px;
+    height: 4.5px;
+    background-color: var(--indicator-color);
+    opacity: 0.3;
+    border-radius: 100px;
+    margin: 8px auto 0 auto;
+    pointer-events: none;
+}
+
+/* ===================================================================
+   DESKTOP DOCK (VIEW CONTROLS)
+   =================================================================== */
+.desktop-dock {
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    background-color: var(--dock-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 30px;
+    border: 0.5px solid var(--separator);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    z-index: 50;
+    transition: opacity 0.3s ease;
+}
+
+.dock-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    padding: 6px 14px;
+    font-family: var(--font-stack);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.dock-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.dock-btn:hover {
+    background-color: rgba(142, 142, 147, 0.15);
+}
+
+.dock-btn:active {
+    transform: scale(0.96);
+}
+
+/* Fullscreen expanded mode on desktop */
+.device-wrapper.full-mode {
+    padding: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: var(--bg-viewport) !important;
+}
+
+.device-wrapper.full-mode .iphone-frame {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.device-wrapper.full-mode .iphone-notch {
+    display: none !important;
+}
+
+/* Tam ekran modunda saat, wifi, şebeke ve pil göstergeleri belirgin ve şık şekilde görünsün */
+.device-wrapper.full-mode .ios-status-bar {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    height: 44px !important;
+    padding: 0 28px !important;
+    background-color: var(--bg-navbar) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+    border-bottom: 0.5px solid var(--nav-border) !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-shrink: 0 !important;
+    z-index: 50 !important;
+    color: var(--text-primary) !important;
+}
+
+.device-wrapper.full-mode .home-indicator {
+    display: none !important;
+}
+
+/* Masaüstü tam ekran modunda sohbet ve giriş alanını şık ve odaklı tutalım */
+.device-wrapper.full-mode .chat-viewport {
+    display: flex;
+    justify-content: center;
+}
+
+.device-wrapper.full-mode .chat-content {
+    max-width: 760px;
+    width: 100%;
+}
+
+.device-wrapper.full-mode .composer-card {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+/* ===================================================================
+   iOS MODAL SHEETS (SETTINGS & INFO)
+   =================================================================== */
+.ios-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s var(--sheet-easing);
+}
+
+.ios-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ios-sheet {
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    background-color: var(--bg-sheet);
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.38s var(--sheet-easing);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
+}
+
+.ios-modal-overlay.active .ios-sheet {
+    transform: translateY(0);
+}
+
+.sheet-grabber {
+    width: 36px;
+    height: 4.5px;
+    background-color: var(--system-gray3);
+    border-radius: 10px;
+    margin: 8px auto 4px auto;
+}
+
+.sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px 12px 16px;
+    border-bottom: 0.5px solid var(--separator);
+}
+
+.sheet-title {
+    font-size: 16.5px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+}
+
+.sheet-header-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-stack);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--system-blue);
+    cursor: pointer;
+    padding: 4px 8px;
+}
+
+.sheet-header-btn.primary-action {
+    font-weight: 600;
+}
+
+.sheet-header-btn.invisible {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.sheet-body {
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* iOS Grouped Tables */
+.ios-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.ios-group-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+    padding-left: 14px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.ios-cell {
+    background-color: var(--bg-cell);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15.5px;
+    color: var(--text-primary);
+    border-bottom: 0.5px solid var(--separator);
+    transition: background-color 0.15s ease;
+}
+
+.ios-group .ios-cell:first-of-type {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.ios-group .ios-cell:last-of-type {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-bottom: none;
+}
+
+.cell-label {
+    font-weight: 500;
+    letter-spacing: -0.2px;
+}
+
+.action-cell {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    background-color: var(--bg-cell);
+}
+
+.action-cell:active {
+    background-color: rgba(142, 142, 147, 0.15);
+}
+
+.action-cell.destructive .cell-label {
+    color: var(--system-red);
+}
+
+.text-cell p {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+}
+
+/* iOS Segmented Control */
+.segmented-control {
+    display: flex;
+    background-color: rgba(142, 142, 147, 0.18);
+    border-radius: 8px;
+    padding: 2px;
+    gap: 2px;
+}
+
+.seg-btn {
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-family: var(--font-stack);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.seg-btn.active {
+    background-color: var(--bg-cell);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    font-weight: 600;
+}
+
+/* iOS Toggle Switch */
+.ios-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.ios-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--system-gray4);
+    border-radius: 34px;
+    transition: background-color 0.3s var(--spring-easing);
+}
+
+.switch-track::before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s var(--spring-easing);
+}
+
+.ios-switch input:checked + .switch-track {
+    background-color: var(--system-green);
+}
+
+.ios-switch input:checked + .switch-track::before {
+    transform: translateX(20px);
+}
+
+/* Info Hero in Sheet */
+.info-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 8px 0 14px 0;
+}
+
+.info-logo-badge {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
+    border: 2px solid var(--system-blue);
+    background-color: #0b0f19;
+}
+
+.info-app-name {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+}
+
+.info-app-tagline {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+}
+
+.ios-footnote {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+}
+
+/* ===================================================================
+   BİLGİ PENCERESİ (INFO SHEET) - KAYDIRMASIZ VE FERAH TASARIM
+   =================================================================== */
+#infoModal .ios-sheet {
+    height: auto !important;
+    max-height: 90vh !important;
+    max-width: 500px !important;
+    overflow: hidden !important;
+}
+
+#infoModal .sheet-grabber {
+    width: 38px;
+    height: 4.5px;
+    margin: 8px auto 4px auto;
+}
+
+#infoModal .sheet-header {
+    padding: 8px 18px 10px 18px;
+}
+
+#infoModal .sheet-title {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+#infoModal .sheet-body {
+    overflow: hidden !important;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+    padding: 8px 16px max(calc(env(safe-area-inset-bottom, 0px) + 12px), 16px) 16px !important;
+    gap: 11px !important;
+    touch-action: none !important;
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: auto !important;
+}
+
+#infoModal .sheet-body::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+#infoModal .info-hero {
+    margin: 4px 0 6px 0;
+}
+
+#infoModal .info-logo-badge {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 6px;
+    box-shadow: 0 6px 20px rgba(0, 122, 255, 0.35);
+    border: 2px solid var(--system-blue);
+}
+
+#infoModal .info-app-name {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+#infoModal .info-app-tagline {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+#infoModal .ios-group {
+    margin-bottom: 0;
+}
+
+#infoModal .ios-group-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    margin-bottom: 4px;
+    padding-left: 10px;
+    color: var(--system-blue) !important;
+}
+
+#infoModal .ios-cell {
+    padding: 10px 15px;
+    border-radius: 14px !important;
+}
+
+#infoModal .text-cell p {
+    font-size: 13px;
+    line-height: 1.42;
+    color: var(--text-secondary);
+}
+
+#infoModal .ios-footnote {
+    margin-top: 4px;
+    font-size: 11px;
+    letter-spacing: -0.1px;
+    color: var(--system-blue) !important;
+}
+
+.footnote-blue {
+    color: var(--system-blue) !important;
+    font-weight: 500;
+}
+
+/* ===================================================================
+   iOS ALERT CONTROLLER (UIAlertController Modal)
+   =================================================================== */
+.ios-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+}
+
+.ios-alert-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ios-alert-box {
+    width: 270px;
+    background-color: var(--bg-alert);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 14px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(1.15);
+    transition: transform 0.22s var(--spring-easing);
+}
+
+.ios-alert-overlay.active .ios-alert-box {
+    transform: scale(1);
+}
+
+.alert-content {
+    padding: 18px 16px 16px 16px;
+}
+
+.alert-title {
+    font-size: 16.5px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.alert-message {
+    font-size: 13px;
+    line-height: 1.35;
+    color: var(--text-primary);
+}
+
+.alert-actions {
+    border-top: 0.5px solid var(--separator);
+    display: flex;
+}
+
+.alert-btn {
+    flex: 1;
+    padding: 11px 16px;
+    background: transparent;
+    border: none;
+    font-family: var(--font-stack);
+    font-size: 16.5px;
+    font-weight: 600;
+    color: var(--system-blue);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.alert-btn:active {
+    background-color: rgba(60, 60, 67, 0.08);
+}
+
+/* ===================================================================
+   KEYFRAME ANIMATIONS
+   =================================================================== */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes dotPulse {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.35;
+    }
+    30% {
+        transform: translateY(-5px);
+        opacity: 1;
+    }
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN (MOBILE ADAPTATION)
+   =================================================================== */
+/* ===================================================================
+   PWA STANDALONE & SAFE AREA NOTCH PROTECTION
+   =================================================================== */
+/* Ana ekrana eklendiğinde (Standalone PWA) */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+    body {
+        background-color: var(--bg-viewport) !important;
+        overscroll-behavior: none;
+    }
+
+    .device-wrapper {
+        padding: 0 !important;
+        height: var(--app-height, 100dvh) !important;
+        max-height: var(--app-height, 100dvh) !important;
+    }
+
+    .device-wrapper .iphone-frame {
+        width: 100% !important;
+        height: var(--app-height, 100dvh) !important;
+        max-width: 100% !important;
+        max-height: var(--app-height, 100dvh) !important;
+        border-radius: 0 !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .iphone-notch,
+    .desktop-dock {
+        display: none !important;
+    }
+
+    /* Durum çubuğu (saat, wifi, pil, şebeke) */
+    .ios-status-bar {
+        display: flex !important;
+        padding-top: max(env(safe-area-inset-top, 0px), 8px) !important;
+        height: calc(34px + max(env(safe-area-inset-top, 0px), 8px)) !important;
+        background-color: var(--bg-navbar);
+        padding-left: 18px;
+        padding-right: 18px;
+        flex-shrink: 0 !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 60 !important;
+    }
+
+    .ios-nav-bar {
+        padding-top: 4px !important;
+        padding-bottom: 8px !important;
+        flex-shrink: 0 !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 50 !important;
+    }
+
+    .ios-composer {
+        padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 8px), 16px) !important;
+        flex-shrink: 0 !important;
+    }
+}
+
+/* iOS Standalone Sınıfı */
+.pwa-standalone body {
+    background-color: var(--bg-viewport) !important;
+    overscroll-behavior: none;
+}
+
+.pwa-standalone .device-wrapper {
+    padding: 0 !important;
+    height: var(--app-height, 100dvh) !important;
+    max-height: var(--app-height, 100dvh) !important;
+}
+
+.pwa-standalone .device-wrapper .iphone-frame {
+    width: 100% !important;
+    height: var(--app-height, 100dvh) !important;
+    max-width: 100% !important;
+    max-height: var(--app-height, 100dvh) !important;
+    border-radius: 0 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.pwa-standalone .iphone-notch,
+.pwa-standalone .desktop-dock {
+    display: none !important;
+}
+
+.pwa-standalone .ios-status-bar {
+    display: flex !important;
+    padding-top: max(env(safe-area-inset-top, 0px), 8px) !important;
+    height: calc(34px + max(env(safe-area-inset-top, 0px), 8px)) !important;
+    background-color: var(--bg-navbar);
+    padding-left: 18px;
+    padding-right: 18px;
+    flex-shrink: 0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 60 !important;
+}
+
+.pwa-standalone .ios-nav-bar {
+    padding-top: 4px !important;
+    padding-bottom: 8px !important;
+    flex-shrink: 0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+}
+
+.pwa-standalone .ios-composer {
+    padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 8px), 16px) !important;
+    flex-shrink: 0 !important;
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN (MOBILE ADAPTATION)
+   =================================================================== */
+@media (max-width: 600px), (max-height: 650px) {
+    html {
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+    }
+
+    body {
+        position: fixed !important;
+        top: var(--viewport-offset-top, 0px) !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: var(--app-height, 100dvh) !important;
+        max-height: var(--app-height, 100dvh) !important;
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+        background: var(--bg-viewport) !important;
+    }
+
+    .device-wrapper {
+        width: 100% !important;
+        height: var(--app-height, 100dvh) !important;
+        max-height: var(--app-height, 100dvh) !important;
+        overflow: hidden !important;
+    }
+
+    /* Tam Ekran Modu (Edge-to-Edge Fullscreen) */
+    .device-wrapper.full-mode {
+        padding: 0 !important;
+        width: 100% !important;
+        height: var(--app-height, 100dvh) !important;
+        max-height: var(--app-height, 100dvh) !important;
+        background: var(--bg-viewport);
+    }
+
+    .device-wrapper.full-mode .iphone-frame {
+        width: 100% !important;
+        height: var(--app-height, 100dvh) !important;
+        max-width: 100% !important;
+        max-height: var(--app-height, 100dvh) !important;
+        border-radius: 0 !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+
+    /* Sabit Üst Başlık: Saat, wifi, şebeke, pil, ATA yazısı, ayarlar ve bilgi ASLA kaymaz */
+    .device-wrapper .ios-status-bar,
+    .device-wrapper.full-mode .ios-status-bar {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 100% !important;
+        padding-top: max(env(safe-area-inset-top, 0px), 8px) !important;
+        height: calc(36px + max(env(safe-area-inset-top, 0px), 8px)) !important;
+        padding-left: 18px !important;
+        padding-right: 18px !important;
+        background-color: var(--bg-navbar) !important;
+        backdrop-filter: blur(25px) !important;
+        -webkit-backdrop-filter: blur(25px) !important;
+        border-bottom: 0.5px solid var(--nav-border) !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        color: var(--text-primary) !important;
+        flex-shrink: 0 !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 60 !important;
+        touch-action: none !important;
+        user-select: none !important;
+    }
+
+    .device-wrapper.full-mode .iphone-notch {
+        display: none !important;
+    }
+
+    .device-wrapper .ios-nav-bar,
+    .device-wrapper.full-mode .ios-nav-bar {
+        padding-top: 4px !important;
+        padding-bottom: 8px !important;
+        flex-shrink: 0 !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 50 !important;
+        touch-action: none !important;
+    }
+
+    /* iPhone Çerçevesi Modu (Mobilde de Çerçeveli Görünüm) */
+    .device-wrapper:not(.full-mode) {
+        padding: max(env(safe-area-inset-top, 0px), 6px) 6px max(env(safe-area-inset-bottom, 0px), 6px) 6px;
+    }
+
+    .device-wrapper:not(.full-mode) .iphone-frame {
+        width: 100%;
+        max-width: 390px;
+        height: calc(var(--app-height, 100dvh) - max(env(safe-area-inset-top, 0px), 6px) - max(env(safe-area-inset-bottom, 0px), 6px) - 8px);
+        max-height: 844px;
+        border-radius: 44px;
+        border: 7px solid var(--phone-bezel);
+        outline: 1.5px solid var(--phone-edge-highlight);
+        box-shadow: var(--phone-shadow);
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+
+    .device-wrapper:not(.full-mode) .iphone-notch {
+        display: flex !important;
+        width: 112px;
+        height: 28px;
+        top: 8px;
+    }
+
+    /* Klavye açıldığında mobilde çerçeveli mod klavyeye tam oturacak şekilde kenarlara sıfırlanır */
+    body.keyboard-open .device-wrapper:not(.full-mode) {
+        padding: 0 !important;
+    }
+
+    body.keyboard-open .device-wrapper:not(.full-mode) .iphone-frame {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: var(--app-height, 100dvh) !important;
+        max-height: var(--app-height, 100dvh) !important;
+        border-radius: 0 !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.keyboard-open .device-wrapper:not(.full-mode) .iphone-notch {
+        display: none !important;
+    }
+
+    /* Mobilde alt dock gizlenir, kontrol Ayarlar içerisinden yapılır */
+    .desktop-dock {
+        display: none !important;
+    }
+
+    /* App Viewport inside Phone Frame */
+    .ios-app-viewport {
+        flex: 1 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+
+    /* Chat Messages Stream */
+    .chat-viewport {
+        flex: 1 !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior-y: contain !important;
+    }
+
+    /* Composer: Soru ve Rica kutucukları */
+    .ios-composer {
+        flex-shrink: 0 !important;
+        position: relative !important;
+        z-index: 40 !important;
+        touch-action: manipulation !important;
+        padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 8px), 16px) !important;
+        transition: padding-bottom 0.15s ease !important;
+    }
+
+    /* Klavye açıldığında Soru ve Rica kutucukları tam klavyenin üstüne oturur */
+    body.keyboard-open .ios-composer {
+        padding-bottom: 8px !important;
+    }
+
+    body.keyboard-open .home-indicator {
+        display: none !important;
+    }
+}
